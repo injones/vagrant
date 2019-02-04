@@ -83,6 +83,9 @@ unzip -d /opt/maven apache-maven-3.6.0-bin.zip
 # vb extension
 code --install-extension ms-vscode.cpptools
 
+# add vagrant user to vboxsf group
+usermod -a -G vboxsf vagrant
+
 # export PATH
 echo 'export PATH=$PATH:/opt/android-studio/bin'  >> ~/.bash_profile
 echo 'export PATH=$PATH:/opt/gradle/gradle-5.1.1/bin' >> ~/.bash_profile
