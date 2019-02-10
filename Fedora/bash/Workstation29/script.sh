@@ -65,6 +65,9 @@ dnf install nodejs -y
 # npm
 dnf install npm -y
 
+# make vagrant owner
+sudo chown -R vagrant /usr/lib/node_modules
+
 # yarn
 npm install yarn -g
 
@@ -79,6 +82,9 @@ mkdir /opt/maven
 cd /usr/downloads
 wget http://apache.mirrors.nublue.co.uk/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip
 unzip -d /opt/maven apache-maven-3.6.0-bin.zip
+
+# electron
+yarn global add electron
 
 # vb extension
 code --install-extension ms-vscode.cpptools

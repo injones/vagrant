@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/fedora29"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -45,45 +45,41 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   config.vm.synced_folder "./data", "/vagrant_data", automount: true
 
-  # Check guest additions (requires vagrant-vbguest plugin)
-  config.vbguest.auto_update = false
-
-  config.vm.hostname = "Workstation29"
+  config.vm.hostname = "ros-kinetic"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
   config.vm.provider "virtualbox" do |vb|
-    #Display the VirtualBox GUI when booting the machine
+    # Display the VirtualBox GUI when booting the machine
     vb.gui = true
-    #Customize the amount of memory on the VM:
+
+    # Customize the amount of memory on the VM:
     vb.memory = "2048"
     vb.cpus = 2
-    vb.name = "Workstation29"
-    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+    vb.name = "ros-kinetic"
   end
-  #
+
   # View the documentation for the provider you are using for more
   # information on available options.
-  config.disksize.size = '50GB'
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   dnf update -y
-  #   dnf upgrade -y
-  #   dnf -y group install "Fedora Workstation"
-  #   echo "exec /usr/bin/gnome-session" >> ~/.xinitrc
-  #   dnf install -y apache2
-  #   dnf install wget -y
-  #   dnf install curl -y
-  #   dnf install unzip -y
-  #   systemctl set-default graphical.target
-  #   systemctl enable gdm.service
-  #   systemctl restart gdm.service
-  # SHELL
-  config.vm.provision "file", source: "anaconda.exp", destination: "anaconda.exp"
-  config.vm.provision "shell", path: "script.sh"
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install ubuntu-gnome-desktop -y
+    apt-get install wget -y
+    sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros-latest.list'
+    wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+    apt-get install ros-kinetic-desktop
+    sudo rosdep init
+    rosdep update
+    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
+    echo "source /opt/ros/kinetic/setup.bash" >> /home/vagrant/.bashrc
+    source /home/vagrant/.bashrc
+    apt-get install python-rosinstall
+  SHELL
 end
